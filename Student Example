@@ -1,0 +1,443 @@
+# there is a LOT of terrible hardcoded magic numbery going on
+# all based on assumptions of based stick figures being 50x100 px
+# this is intended for use with CMPT 140 a05, q01
+
+
+####################################
+# RAW COORDINATE DRAWING FUNCTIONS #
+####################################
+def draw_stick_human(x,y,colour):
+    """
+    draws 50x100 px human stick figure
+    not intended for direct calls- use other draw functions
+    x: x-centre of stick figure's head
+    y: y-centre of stick figure's head
+    """
+    figure_w = 50  # width of stick figure
+    figure_h = 100  # height of stick figure
+    
+    # colours (white default)
+    fill(colour)  # head
+    stroke(colour)  # all other sticks
+    strokeWeight(5)
+    
+    # mesh
+    # remember y is centre of head, which is 15px into height
+    # head is 30px tall, legs 20px tall
+    line(x,y,x,y+65)  # body
+    line(x-figure_w/2,y+15+25,x+figure_w/2,y+15+25)  # arms
+    line(x,y+65,x-figure_w/2,y+85)  # left leg
+    line(x,y+65,x+figure_w/2,y+85)  # right leg
+    noStroke()
+    ellipse(x,y,30,30)  # head
+    
+def draw_stick_knight(x,y):
+    """
+    draws a knight adorned in yellow armour with a sword
+    x: x-centre of knight's head
+    y: y-centre of knight's head
+    """
+    
+    # knight in yellow armour    
+    draw_stick_human(x,y,color(255,255,0))
+    
+    # draw sword
+    stroke(225,225,225)
+    line(x+25,y+15+25,x+25,y-15)
+    # brown hilt
+    stroke(133,87,35)
+    line(x+20,y+15+25,x+25+5,y+15+25)
+    line(x+25,y+15+25,x+25,y+15+30)
+    
+def draw_stick_thief(x,y):
+    """
+    draws a gray thief holding a coin pouch
+    x: x-centre of thief's head
+    y: y-centre of thief's head
+    """
+    
+    # gray thief
+    draw_stick_human(x,y,color(192,192,192))
+    
+    # coin pouch in hand
+    noStroke()
+    fill(255,192,64)
+    rect(x-25-5,y+15+25,10,8)
+    ellipse(x-25,y+15+25+4+10,20,20)
+    fill(0,0,0)
+    textAlign(CENTER)
+    text("$",x-25,y+15+25+4+10+3)
+    
+def draw_stick_aristocrat(x,y):
+    """
+    draws an aristocrat dressed in purple with yellow crown
+    x: x-centre of aristocrat's head
+    y: y-centre of aristocrat's head
+    """
+      
+    # purple aristocrat
+    draw_stick_human(x,y,color(192,0,225))
+    
+    # yellow crown
+    noStroke()
+    fill(255,255,0)
+    rect(x-15,y-15-5,30,10)
+    # crown spikes
+    strokeWeight(5)
+    stroke(255,255,0)
+    line(x-15+2,y-15-5,x-15+2,y-15-10)  # leftmost crown spike
+    line(x+15-3,y-15-5,x+15-3,y-15-10)  # rightmost crown spike
+    line(x,y-15-5,x,y-15-10)  # middle crown spike
+    
+def draw_stick_wizard(x,y):
+    """
+    draws blue wizard
+    x: x-centre of wizard's head
+    y: y-centre of wizard's head
+    """    
+    draw_stick_human(x,y,color(0,0,255))   
+    
+def draw_stick_boat(x,y):
+    """
+    draws brown boat with its centre at (x,y)
+    x: x-centre for boat
+    y: y-centre for boat
+    """   
+    boat_w = 200  # boat width in px
+    boat_h = 40   # boat height in px
+    
+    noStroke()
+    fill(133,87,35)
+    rect(x-boat_w/4,y-boat_h/2,boat_w/2,boat_h)
+    triangle(x-boat_w/2,y-boat_h/2,x-boat_w/4,y-boat_h/2,x-boat_w/4,y+boat_h/2)
+    triangle(x+boat_w/4,y-boat_h/2,x+boat_w/2,y-boat_h/2,x+boat_w/4,y+boat_h/2)
+    
+def draw_operated_stick_boat(x,y):
+    """
+    draws brown boat operated by a wizard and its magic
+    x: x-centre of boat operator's head
+    y: y-centre of boat operator's head
+    """
+    
+    # draw wizard centred in boat
+    draw_stick_wizard(x,y)
+    draw_stick_boat(x,y-15+80+2)  # 2 nudges boat downwards to cover wizard's feet
+
+
+################################
+# CONVENIENT DRAWING FUNCTIONS #
+################################
+
+def draw_knight(loc):
+    """
+    draws knight at one of four pre-defined locations
+    loc: pre-defined location to draw knight at
+    """ 
+    x_offset = 100  # knight's x-coord offset
+    y_offset = 30   # knight's y-coord offset
+    
+    if loc == "left":
+        x_offset = x_offset*1  # no change from default 
+    elif loc == "boat_left":
+        x_offset = x_offset*3
+    elif loc == "boat_right":
+        x_offset = x_offset*5
+    elif loc == "right":
+        x_offset = x_offset*7
+        
+    draw_stick_knight(x_offset,y_offset)
+        
+def draw_thief(loc):
+    """
+    draws thief at one of four pre-defined locations
+    loc: pre-defined location to draw thief at
+    """ 
+    x_offset = 100  # thief's x-coord offset
+    y_offset = 115+30   # thief's y-coord offset
+    
+    if loc == "left":
+        x_offset = x_offset*1  # no change from default 
+    elif loc == "boat_left":
+        x_offset = x_offset*3
+    elif loc == "boat_right":
+        x_offset = x_offset*5
+    elif loc == "right":
+        x_offset = x_offset*7
+        
+    draw_stick_thief(x_offset,y_offset)
+
+def draw_aristocrat(loc):
+    """
+    draws aristocrat at one of four pre-defined locations
+    loc: pre-defined location to draw thief at
+    """ 
+    x_offset = 100  # aristocrat's x-coord offset
+    y_offset = 215+45   # aristocrat's y-coord offset
+    
+    if loc == "left":
+        x_offset = x_offset*1  # no change from default 
+    elif loc == "boat_left":
+        x_offset = x_offset*3
+    elif loc == "boat_right":
+        x_offset = x_offset*5
+    elif loc == "right":
+        x_offset = x_offset*7
+        
+    draw_stick_aristocrat(x_offset,y_offset)
+
+def draw_boat(loc):
+    """
+    draws wizard and boat at one of two pre-defined locations
+    loc: pre-defined location to draw operated boat at
+    """ 
+    x_offset = 100  # boat's x-coord offset
+    y_offset = 315+60   # boat's y-coord offset
+    
+    if loc == "left":
+        x_offset = x_offset*3  # no change from default 
+    elif loc == "right":
+        x_offset = x_offset*5
+        
+    draw_operated_stick_boat(x_offset,y_offset)
+
+def draw_message(msg):
+    """
+    draws the given message near the bottom of the canvas
+    msg: message to draw
+    """
+    font_size = 16  # font size of message
+
+    fill(255,255,255)
+    textAlign(CENTER)
+    textSize(font_size)
+    text(msg,width/2,height-65)
+    
+    
+#####################################
+# NO NEED TO CHANGE ABOVE THIS LINE #
+#####################################    
+#Boat_Puzzle - Danyal_Khan
+#This program allows the user to solve a riddle, the program itself doesn't solve it, rather checks for illegal moves and win conditions.
+#The program contains comments which refer to the code below the comment.
+
+# following locations can be one of "left", "boat_left", "boat_right", "right"
+knight_loc = "left"      # knight's location
+thief_loc = "left"       # thief's location
+aristocrat_loc = "left"  # aristocrat's location
+
+# following locations can be one of "left", "right"
+boat_loc = "left"        # wizard & boat's location
+
+# following passengers can be one of "", "knight", "thief", "aristocrat"
+passenger = ""           # current boat passenger ("" is no passenger)
+
+msg = ""                 # current message displayed on bottom of canvas
+
+
+def setup():
+    """This function contains code which will run as soon as the program starts."""
+    size(800,590)
+    background(0,0,0)
+        
+def keyPressed():
+    """This function detects all key presses by the user and acts accordingly."""
+    frameRate(60)
+    global passenger
+    global knight_loc
+    global aristocrat_loc
+    global thief_loc
+    global boat_loc
+    global msg
+    
+    #This statement is related to the loading and unloading of the knight onto the boat.
+    if(key == 'k'): 
+        #Responsible for loading from either direction.
+        if(passenger == ''):
+            msg = ''
+            if(knight_loc == "left" and boat_loc == 'left'): 
+                knight_loc = "boat_left"
+                passenger = 'knight'
+            elif(knight_loc == "right" and boat_loc == 'right'):
+                knight_loc = "boat_right"
+                passenger = 'knight'
+        
+        #Responsible for unloading from either direction.
+        elif(passenger == 'knight'): 
+            msg = ''
+            if(knight_loc == 'boat_left'):
+                knight_loc = "left"
+                passenger = ''
+            elif(knight_loc == "boat_right"):    
+                knight_loc = "right"
+                passenger = ''
+        else:
+            msg = 'WHAM! Only 1 passenger can be loaded onto the boat at a time. Do you want to sink everyone?'
+
+    #This statement is related to the loading and unloading of the aristocrat onto the boat.
+    elif(key == 'a'): 
+        #Responsible for loading from either direction.
+        if(passenger == ''):
+            msg = ''
+            if(aristocrat_loc == "left"  and boat_loc == 'left'): 
+                aristocrat_loc = "boat_left"
+                passenger = 'aristocrat'
+            elif(aristocrat_loc == "right" and boat_loc == 'right'):
+                aristocrat_loc = "boat_right"
+                passenger = 'aristocrat'
+        
+        #Responsible for unloading from either direction.    
+        elif(passenger == 'aristocrat'): 
+            msg = ''
+            if(aristocrat_loc == "boat_left"):
+                aristocrat_loc = "left" 
+                passenger = ''
+            elif(aristocrat_loc == "boat_right"):
+                aristocrat_loc = "right"
+                passenger = ''    
+        else:
+            msg = 'WHAM! Only 1 passenger can be loaded onto the boat at a time. Do you want to sink everyone?'
+            
+    #This statement is related to the loading and unloading of the thief onto the boat.   
+    elif(key == 't'): 
+        #Responsible for loading from either direction.
+        if(passenger == ''):
+            msg = ''
+            if(thief_loc == "left" and boat_loc == 'left'): 
+                thief_loc = "boat_left"
+                passenger = 'thief'
+            elif(thief_loc == "right" and boat_loc == 'right'): 
+                thief_loc = "boat_right"
+                passenger = 'thief'        
+        #Responsible for unloading from either direction.
+        elif(passenger == 'thief'): 
+            msg = ''
+            if(thief_loc == "boat_left"):
+                thief_loc = "left" 
+                passenger = ''
+            elif(thief_loc == "boat_right"):
+                thief_loc = "right"
+                passenger = ''         
+        else:
+            msg = 'WHAM! Only 1 passenger can be loaded onto the boat at a time. Do you want to sink everyone?'
+        
+          
+                
+    if(key == 'b'): 
+    #The following code will run when the boat is on the left side of the river.
+        if(boat_loc == 'left'): 
+            boatLeft()
+    #The following block of code will run when the boat is on the right side of the river.
+        elif(boat_loc == 'right'): 
+            boatRight()
+    
+    #This statement resets the game.
+    if(key == 'r'): 
+        msg = ''
+        passenger = ""
+        knight_loc = "left"
+        thief_loc = "left"
+        aristocrat_loc = "left"
+        boat_loc = "left"
+        
+
+    
+def mouseClicked():
+    """This function checks whether the user has clicked on the boat, and moves it accordingly"""
+    if((mouseX >= 200 and mouseX <= 400) and (mouseY >= 420 and mouseY <= 460)):
+        #Left side boat
+        boatLeft()
+    elif((mouseX >= 400 and mouseX <= 600) and (mouseY >= 420 and mouseY <= 460)):
+        #Right side boat
+        boatRight()
+
+
+def boatLeft():
+    """This function handles movement of everything from LEFT to RIGHT. It checks every loaded passenger and moves it to the RIGHT accordingly."""
+    global passenger
+    global knight_loc
+    global aristocrat_loc
+    global thief_loc
+    global boat_loc
+    global msg
+    
+    if((not thief_loc == aristocrat_loc) and (not knight_loc == thief_loc)): 
+        #Checks which passenger it is and moves it with the boat accordingly.
+        if(passenger == 'knight'): 
+            knight_loc = "right"
+            boat_loc = 'right'
+            passenger = ''
+            #Checks for win condition.
+            if(thief_loc == knight_loc == aristocrat_loc == "right"): 
+                msg = "Congratulations! You solved the riddle! Press R to play again."
+        elif(passenger == 'aristocrat'):
+            aristocrat_loc = "right"
+            boat_loc = 'right'
+            passenger = ''
+            #Checks for win condition.
+            if(thief_loc == knight_loc == aristocrat_loc == "right"):
+                msg = "Congratulations! You solved the riddle! Press R to play again."
+        elif(passenger == 'thief'):
+            thief_loc = "right"
+            boat_loc = 'right'
+            passenger = ''
+            #Checks for win condition.
+            if(thief_loc == knight_loc == aristocrat_loc == "right"):
+                msg = "Congratulations! You solved the riddle! Press R to play again."  
+        #The following elif statement moves the empty boat when all three are NOT on the same side.
+        elif(passenger == ""):
+            boat_loc = 'right'    
+    #The following elif statement moves the empty boat when ALL three ARE on the same side.
+    elif((passenger == "") and (thief_loc == aristocrat_loc == knight_loc)):
+        boat_loc = 'right'    
+    else:
+        msg = 'Illegal Move'
+    
+    
+def boatRight():
+    """This function handles movement of everything from RIGHT to LEFT. It checks every loaded passenger and moves it to the LEFT accordingly."""
+    global passenger
+    global knight_loc
+    global aristocrat_loc
+    global thief_loc
+    global boat_loc
+    global msg
+    
+    #Checks for illegal conditions.
+    if((not thief_loc == aristocrat_loc) and (not knight_loc == thief_loc)):
+        #Checks which passenger it is and moves it accordingly.
+        if(passenger == 'knight'):      
+            knight_loc = "left"
+            boat_loc = 'left'
+            passenger = ''
+        elif(passenger == 'aristocrat'):
+            aristocrat_loc = "left"
+            boat_loc = 'left'
+            passenger = ''
+        elif(passenger == 'thief'):
+            thief_loc = "left"
+            boat_loc = 'left'
+            passenger = ''
+        #The following elif statement moves the empty boat when all three are NOT on the same side.  
+        elif(passenger == ""):  
+            boat_loc = 'left'  
+    #The following elif statement moves the empty boat when ALL three ARE on the same side.
+    elif((passenger == "") and (thief_loc == aristocrat_loc == knight_loc)):
+        boat_loc = 'left'
+    else:
+        msg = 'Illegal Move.'
+        
+        
+def draw():
+    """This function is responsible for the visual aspect of the program. It draws all the characters and other objects."""
+    global knight_loc
+    global thief_loc
+    global aristocrat_loc
+    global boat_loc
+    
+    background(0,0,0)
+    draw_knight( knight_loc )
+    draw_thief( thief_loc )
+    draw_aristocrat( aristocrat_loc )
+    draw_boat( boat_loc )
+    draw_message( msg )
+    
